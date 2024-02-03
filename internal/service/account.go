@@ -2,16 +2,16 @@ package service
 
 import (
 	"context"
-	"grpc/internal/db"
+	"grpc/internal/database"
 	"grpc/internal/pb"
 )
 
 type AccountService struct {
 	pb.UnimplementedAccountServiceServer
-	AccountDB db.Account
+	AccountDB database.Account
 }
 
-func NewAccountService(accountDB db.Account) *AccountService {
+func NewAccountService(accountDB database.Account) *AccountService {
 	return &AccountService{AccountDB: accountDB}
 }
 
