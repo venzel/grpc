@@ -119,3 +119,27 @@ gRPC
 -   Suporte a streaming;
 -   Design livre;
 -   Geração de código automático, que evita menos errors.
+
+## Pré requisitos
+
+-   protolc
+
+-   [Instalação](https://grpc.io/docs/protoc-installation/)
+
+```bash
+# Instalação
+apt install -y protobuf-compiler
+# Versão
+protoc --version
+```
+
+-   Plugins
+
+[Instalação](https://grpc.io/docs/languages/go/quickstart/)
+
+```bash
+# Generator para go
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+# Generate grpc para go
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+```
