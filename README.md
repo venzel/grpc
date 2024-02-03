@@ -1,12 +1,10 @@
 # gRPC
 
--   É uma maneira nova de utilizar RPC com outros tipos de protocolos;
--   Criada pela Google
--   É uma forma segura de trabalhar entre comunicações entre sistemas;
--   É um framework desenvolvido pelo Google que facilita o processo de comunicação entre sistema de forma rápida, leve e indepedente de linguagem.
--   Quando se fala em framework, falamos num conjunto de ferramentas e recursos;
+-   É um framework desenvolvido pelo Google que facilita o processo de comunicação entre sistemas, de forma rápida, leve e indepedente de linguagem.
 -   Mantida pela CNCF que é a mesma que mantém o Kubernetes e OpenTelemetry;
--   Totalmente dependente do protocol buffers.
+-   É uma forma segura de trabalhar comunicações entre sistemas;
+-   Totalmente dependente do protocol buffers;
+-   Como ele é uma plataforma nova que consegue rodar principalmente com web no protocolo http/2.
 
 ## Links importantes
 
@@ -17,8 +15,7 @@
 
 -   Microserviços;
 -   Mobile, browser e backend;
--   Geração das bibliotecas de forma automática
--   Como ele é uma plataforma nova que consegue rodar principalmente com web no protocolo http/2
+-   Geração de bibliotecas de forma automática.
 
 ## Linguagens com suporte oficial
 
@@ -32,14 +29,14 @@ Através do gRPC-C é possível utilizar python, nodejs, kotlin e etc.
 
 <img src="./media/grpc-1.png" />
 
-O cliente realiza uma chamada no servidor, que evoca uma função para que o server consiga responer a essa requisição.
+O cliente realiza uma chamada no servidor, que evoca uma função para que o server consiga responder a essa requisição.
 
 No passado, se utilizava muito XML para fazer essas requisições, por conta dos contratos pré definidos e etc.
 
 ## Protocol Buffers
 
 -   É uma linguagem criada de forma neutra com mecanismo de extensibilidade e serialização de dados, é como se fosse um XML, com contratos pré definidos só que menor, muito mais rápido e mais simples.
--   Os dados trafegados são em formato binário;
+-   Os dados trafegados são em formato binários;
 -   Trabalha em cima de contratos;
 -   Necessita realizar a serialização e descereliação dos dados;
 -   Pode ser utilizado indepedente do gRPC.
@@ -55,8 +52,6 @@ No passado, se utilizava muito XML para fazer essas requisições, por conta dos
 
 <img src="./media/grpc-1.png" />
 
-O padrão apresentado acima é quem para quem envia e recebe esteja no formato correto.
-
 Tal padrão é conhecido como protofile.
 
 Normalmente se utiliza a versão 3 para o gRPC.
@@ -70,7 +65,7 @@ Normalmente se utiliza a versão 3 para o gRPC.
 -   Server push;
 -   Headers são comprimidos;
 -   Gasta menos recursos de rede;
--   Processo é mais veloz.
+-   Processamento é mais rápido.
 
 ## Formatos de tráfego entre comunicação gRPC
 
@@ -84,13 +79,13 @@ Normalmente se utiliza a versão 3 para o gRPC.
 
 <img src="./media/grpc-4.png" />
 
-O cliente envia uma request e recebe várias responses do servidor. Exemplo, o cliente solicita dados estatísticos e o servidor vai processando e enviando e quando o dado vai chegando para o cliente, ele já vai processando também.
+O cliente envia uma requisição e recebe várias respostas do servidor. Exemplo, o cliente solicita dados estatísticos e o servidor vai processando e enviando e quando o dado vai chegando para o cliente, ele já vai processando também.
 
 ### Client streaming
 
 <img src="./media/grpc-5.png" />
 
-O cliente envia várias requests e quando o servidor recebe todas as requisições, envia uma resposta.
+O cliente envia várias requisição e quando o servidor recebe todas as requisições, envia uma resposta.
 
 ### Bidirectional streaming
 
@@ -103,7 +98,7 @@ Tanto o cliente como o servidor enviam dados entre sí.
 Rest
 
 -   Tráfego de dados em Json, ou seja, texto;
--   Unidirecional - Uma requisição é enviada e uma responsta é recebida;
+-   Unidirecional - Uma requisição é enviada e uma resposta é recebida;
 -   Alta latência - Porque ao enviar uma requisição, o servidor vai ter de processar totalmente a requisição para enviar uma resposta.
 -   Não existe um contrato pré definido, maior chances de dar erro;
 -   Não tem suporte a streams, ou seja, abre uma conexão, envia o dado, o server processa a informação e envia de volta e a conexão é fechada.
@@ -123,7 +118,6 @@ gRPC
 ## Pré requisitos
 
 -   protolc
-
 -   [Instalação](https://grpc.io/docs/protoc-installation/)
 
 ```bash
@@ -134,8 +128,7 @@ protoc --version
 ```
 
 -   Plugins
-
-[Instalação](https://grpc.io/docs/languages/go/quickstart/)
+-   [Instalação](https://grpc.io/docs/languages/go/quickstart/)
 
 ```bash
 # Generator para go
@@ -143,3 +136,23 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 # Generate grpc para go
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
+
+## Recomendações de plugins para VsCode
+
+-   vscode-proto3
+
+## Comandos
+
+```bash
+# Gera os arquivos e interfaces na pasta /internal/pb
+protoc --go_out=. --go-grpc_out=. proto/account.proto
+# Baixa os pacotes
+go mod tidy
+```
+
+<hr />
+
+<div>
+  <img align="left" src="https://imgur.com/k8HFd0F.png" width=35 alt="Profile"/>
+  <sub>Made with 💙 by <a href="https://github.com/venzel">Enéas Almeida</a></sub>
+</div>
