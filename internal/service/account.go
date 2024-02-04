@@ -15,20 +15,16 @@ func NewAccountService(accountDB database.Account) *AccountService {
 	return &AccountService{AccountDB: accountDB}
 }
 
-func (a *AccountService) CreateAccount(ctx context.Context, in *pb.CreateAccountRequest) (*pb.AccountResponse, error) {
+func (a *AccountService) CreateAccount(ctx context.Context, in *pb.CreateAccountRequest) (*pb.Account, error) {
 	account, err := a.AccountDB.Create(in.Name, in.Email)
 
 	if err != nil {
 		return nil, err
 	}
 
-	newAccount := &pb.Account{
+	return &pb.Account{
 		Id:    account.ID,
 		Name:  account.Name,
 		Email: account.Email,
-	}
-
-	return &pb.AccountResponse{
-		Account: newAccount,
-	}, nil
+	}, err
 }

@@ -18,5 +18,5 @@ message AccountResponse {
 }
 
 service AccountService {
-    rpc CreateAccount(CreateAccountRequest) returns (AccountResponse) {}
+    rpc CreateAccount(CreateAccountRequest) returns (Account) {}
 }
