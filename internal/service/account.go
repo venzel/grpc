@@ -28,3 +28,23 @@ func (a *AccountService) CreateAccount(ctx context.Context, in *pb.CreateAccount
 		Email: account.Email,
 	}, err
 }
+
+func (a *AccountService) ListAccounts(ctx context.Context, in *pb.Blank) (*pb.AccountList, error) {
+	accounts, err := a.AccountDB.FindAll()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var accountsResponse []*pb.Account
+
+	for _, account := range accounts {
+		accountsResponse = append(accountsResponse, &pb.Account{
+			Id:    account.ID,
+			Name:  account.Name,
+			Email: account.Email,
+		})
+	}
+
+	return &pb.AccountList{Accounts: accountsResponse}, nil
+}
