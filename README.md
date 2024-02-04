@@ -222,6 +222,8 @@ evans -r repl
 > call CreateAccount
 ```
 
+**Atenção:** Para parar o envio de streams no Evans: ctrl + D
+
 <hr />
 
 <div>

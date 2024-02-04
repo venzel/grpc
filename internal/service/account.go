@@ -4,6 +4,7 @@ import (
 	"context"
 	"grpc/internal/database"
 	"grpc/internal/pb"
+	"io"
 )
 
 type AccountService struct {
@@ -61,4 +62,32 @@ func (a *AccountService) GetAccount(ctx context.Context, in *pb.AccountGetReques
 		Name:  account.Name,
 		Email: account.Email,
 	}, nil
+}
+
+func (a *AccountService) CreateAccountStream(stream pb.AccountService_CreateAccountStreamServer) error {
+	accounts := &pb.AccountList{}
+
+	for {
+		account, err := stream.Recv()
+
+		if err == io.EOF {
+			return stream.SendAndClose(accounts)
+		}
+
+		if err != nil {
+			return err
+		}
+
+		accountResult, err := a.AccountDB.Create(account.Name, account.Email)
+
+		if err != nil {
+			return err
+		}
+
+		accounts.Accounts = append(accounts.Accounts, &pb.Account{
+			Id:    accountResult.ID,
+			Name:  accountResult.Name,
+			Email: accountResult.Email,
+		})
+	}
 }

@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountServiceClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*Account, error)
+	CreateAccountStream(ctx context.Context, opts ...grpc.CallOption) (AccountService_CreateAccountStreamClient, error)
 	ListAccounts(ctx context.Context, in *Blank, opts ...grpc.CallOption) (*AccountList, error)
 	GetAccount(ctx context.Context, in *AccountGetRequest, opts ...grpc.CallOption) (*Account, error)
 }
@@ -42,6 +43,40 @@ func (c *accountServiceClient) CreateAccount(ctx context.Context, in *CreateAcco
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *accountServiceClient) CreateAccountStream(ctx context.Context, opts ...grpc.CallOption) (AccountService_CreateAccountStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AccountService_ServiceDesc.Streams[0], "/pb.AccountService/CreateAccountStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &accountServiceCreateAccountStreamClient{stream}
+	return x, nil
+}
+
+type AccountService_CreateAccountStreamClient interface {
+	Send(*CreateAccountRequest) error
+	CloseAndRecv() (*AccountList, error)
+	grpc.ClientStream
+}
+
+type accountServiceCreateAccountStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *accountServiceCreateAccountStreamClient) Send(m *CreateAccountRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *accountServiceCreateAccountStreamClient) CloseAndRecv() (*AccountList, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(AccountList)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *accountServiceClient) ListAccounts(ctx context.Context, in *Blank, opts ...grpc.CallOption) (*AccountList, error) {
@@ -67,6 +102,7 @@ func (c *accountServiceClient) GetAccount(ctx context.Context, in *AccountGetReq
 // for forward compatibility
 type AccountServiceServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*Account, error)
+	CreateAccountStream(AccountService_CreateAccountStreamServer) error
 	ListAccounts(context.Context, *Blank) (*AccountList, error)
 	GetAccount(context.Context, *AccountGetRequest) (*Account, error)
 	mustEmbedUnimplementedAccountServiceServer()
@@ -78,6 +114,9 @@ type UnimplementedAccountServiceServer struct {
 
 func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *CreateAccountRequest) (*Account, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
+}
+func (UnimplementedAccountServiceServer) CreateAccountStream(AccountService_CreateAccountStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method CreateAccountStream not implemented")
 }
 func (UnimplementedAccountServiceServer) ListAccounts(context.Context, *Blank) (*AccountList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
@@ -114,6 +153,32 @@ func _AccountService_CreateAccount_Handler(srv interface{}, ctx context.Context,
 		return srv.(AccountServiceServer).CreateAccount(ctx, req.(*CreateAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _AccountService_CreateAccountStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AccountServiceServer).CreateAccountStream(&accountServiceCreateAccountStreamServer{stream})
+}
+
+type AccountService_CreateAccountStreamServer interface {
+	SendAndClose(*AccountList) error
+	Recv() (*CreateAccountRequest, error)
+	grpc.ServerStream
+}
+
+type accountServiceCreateAccountStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *accountServiceCreateAccountStreamServer) SendAndClose(m *AccountList) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *accountServiceCreateAccountStreamServer) Recv() (*CreateAccountRequest, error) {
+	m := new(CreateAccountRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _AccountService_ListAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -172,6 +237,12 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AccountService_GetAccount_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "CreateAccountStream",
+			Handler:       _AccountService_CreateAccountStream_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/account.proto",
 }
