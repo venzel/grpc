@@ -193,12 +193,26 @@ go run cmd/grpc_server/main.go
 # Acessa o banco
 sqlite3 db.sqlite
 # Cria tabela
-sqlite> create table accounts (id string, name string, email string);
+sqlite> create table accounts (id INTEGER PRIMARY KEY, name string, email string);
 # Lista os dados da tabela
 sqlite> select * from accounts;
 # Para sair
 sqlite> .quit
 ```
+
+<details>
+<summary>Mais comandos do Sqlite3</summary>
+
+```bash
+# Deleta todos os registros
+sqlite> DELETE FROM accounts;
+# Dropa a tabela
+sqlite> DROP TABLE accounts;
+# Insere um registro
+sqlite> INSERT INTO accounts (id, name, email) VALUES ('xx0011', 'tiago', 'tiago@gmail.com');
+```
+
+</details>
 
 ### ProtolC
 
