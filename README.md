@@ -1,26 +1,34 @@
 # gRPC
 
--   É um framework desenvolvido pelo Google que facilita o processo de comunicação entre sistemas, de forma rápida, leve e indepedente de linguagem.
+> Este guia foi elaborado por **Enéas Almeida** com o principal objetivo de facilitar os repasses de informações à equipe.
+
+<p align="center"><img src="./media/grpc-logo.png" width="300" /></p>
+
+-   gRPC é um framework desenvolvido pelo Google que facilita o processo de comunicação entre sistemas, de forma rápida, leve e indepedente de linguagem.
 -   Mantida pela CNCF que é a mesma que mantém o Kubernetes e OpenTelemetry;
+-   Anunciado em fevereiro de 2015;
+-   Código aberto;
 -   É uma forma segura de trabalhar comunicações entre sistemas;
 -   Totalmente dependente do protocol buffers;
--   Como ele é uma plataforma nova que consegue rodar principalmente com web no protocolo http/2.
+-   Roda em cima do protocolo http/2.
 
 ## Links importantes
 
--   [grpc.io](https://grpc.io/)
--   [protobuf.dev](https://protobuf.dev/)
+-   [grpc.io](https://grpc.io/) - Site oficial do gRPC.
+-   [protobuf.dev](https://protobuf.dev/) - Manual Protocol Buffers.
 
 ## Onde é ideal para utilizar?
 
--   Microserviços;
--   Mobile, browser e backend;
--   Geração de bibliotecas de forma automática.
+-   Microsserviços;
+-   Aplicações em tempo real;
+-   Sistemas distribuídos;
+-   Aplicações IOT;
+-   Streaming de dados.
 
 ## Linguagens com suporte oficial
 
+-   Go
 -   Java
--   GoLang
 -   C
 
 Através do gRPC-C é possível utilizar python, nodejs, kotlin e etc.
@@ -38,7 +46,7 @@ No passado, se utilizava muito XML para fazer essas requisições, por conta dos
 -   É uma linguagem criada de forma neutra com mecanismo de extensibilidade e serialização de dados, é como se fosse um XML, com contratos pré definidos só que menor, muito mais rápido e mais simples.
 -   Os dados trafegados são em formato binários;
 -   Trabalha em cima de contratos;
--   Necessita realizar a serialização e descereliação dos dados;
+-   Necessita realizar a serialização e deserialização dos dados;
 -   Pode ser utilizado indepedente do gRPC.
 
 ## Diferença entre protocol buffers vs Json
@@ -50,22 +58,22 @@ No passado, se utilizava muito XML para fazer essas requisições, por conta dos
 
 ### O contrato do protocol buffers
 
-<img src="./media/grpc-1.png" />
+<img src="./media/grpc-2.png" />
 
 Tal padrão é conhecido como protofile.
 
 Normalmente se utiliza a versão 3 para o gRPC.
 
-## https/2
+## http/2
 
--   Nasceu com nome de SPEDY, criado pela Google;
+-   Criado pela Google, nasceu com nome de SPDY;
 -   Lançado em 2015;
 -   Os dados trafegados são no formato binário;
 -   Trabalha com multiplex (utiliza a mesma conexão TCP para enviar e receber dados entre cliente e servidor);
 -   Server push;
--   Headers são comprimidos;
+-   Headers comprimidos;
 -   Gasta menos recursos de rede;
--   Processamento é mais rápido.
+-   Processamento mais rápido.
 
 ## Formatos de tráfego entre comunicação gRPC
 
@@ -113,12 +121,13 @@ gRPC
 -   Contratos pré definidos (.proto);
 -   Suporte a streaming;
 -   Design livre;
--   Geração de código automático, que evita menos errors.
+-   Geração de código automático, diminui a chance de erros.
 
 ## Pré requisitos
 
--   protolc
--   [Instalação](https://grpc.io/docs/protoc-installation/)
+### ProtoC
+
+-   [Manual de instalação](https://grpc.io/docs/protoc-installation/)
 
 ```bash
 # Instalação
@@ -127,8 +136,9 @@ apt install -y protobuf-compiler
 protoc --version
 ```
 
--   Plugins
--   [Instalação](https://grpc.io/docs/languages/go/quickstart/)
+### Pacotes Go
+
+-   [Manual de instalação](https://grpc.io/docs/languages/go/quickstart/)
 
 ```bash
 # Generator para go
@@ -137,17 +147,67 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
 
+### Sqlite3
+
+```bash
+# Instalação
+sudo apt install sqlite3
+# Versão
+sqlite3 --version
+```
+
+### Evans
+
+Evans é um cliente para gRPC.
+
+-   [Manual de instalação](https://github.com/ktr0731/evans)
+
+```bash
+# Instalação
+go install github.com/ktr0731/evans@latest
+```
+
+<p align="center"><img src="./media/grpc-evans.png" height="200" /></p>
+
 ## Recomendações de plugins para VsCode
 
 -   vscode-proto3
 
+<p align="center"><img src="./media/proto3.png" height="200" /></p>
+
 ## Comandos
+
+### Sqlite3
+
+```bash
+# Acessa o banco
+sqlite3 db.sqlite
+# Cria tabela
+sqlite> create table accounts (id string, name string, email string);
+# Lista os dados da tabela
+sqlite> select * from accounts;
+```
+
+### ProtolC
 
 ```bash
 # Gera os arquivos e interfaces na pasta /internal/pb
 protoc --go_out=. --go-grpc_out=. proto/account.proto
 # Baixa os pacotes
 go mod tidy
+```
+
+### Client Evans
+
+```bash
+# 1 - Acessa o client, utilizando reflection
+evans -r repl
+# 2 - Seleciona o package
+> package pb
+# 3 - Seleciona o serviço
+> service AccountService
+# 4 - Executa a chamada ao serviço
+> call CreateAccount
 ```
 
 <hr />
