@@ -48,3 +48,17 @@ func (a *AccountService) ListAccounts(ctx context.Context, in *pb.Blank) (*pb.Ac
 
 	return &pb.AccountList{Accounts: accountsResponse}, nil
 }
+
+func (a *AccountService) GetAccount(ctx context.Context, in *pb.AccountGetRequest) (*pb.Account, error) {
+	account, err := a.AccountDB.FindOne(in.Id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.Account{
+		Id:    account.ID,
+		Name:  account.Name,
+		Email: account.Email,
+	}, nil
+}

@@ -19,7 +19,12 @@ message AccountList {
     repeated Account accounts = 1;
 }
 
+message AccountGetRequest {
+    string id = 1;
+}
+
 service AccountService {
     rpc CreateAccount(CreateAccountRequest) returns (Account) {}
     rpc ListAccounts(blank) returns (AccountList) {}
+    rpc GetAccount(AccountGetRequest) returns (Account) {}
 }

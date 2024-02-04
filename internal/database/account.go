@@ -53,7 +53,7 @@ func (c *Account) FindAll() ([]Account, error) {
 	return accounts, nil
 }
 
-func (c *Account) Find(id string) (Account, error) {
+func (c *Account) FindOne(id string) (Account, error) {
 	var name, email string
 
 	err := c.db.QueryRow("SELECT name, email FROM accounts WHERE id = $1", id).
