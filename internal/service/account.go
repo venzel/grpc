@@ -91,3 +91,33 @@ func (a *AccountService) CreateAccountStream(stream pb.AccountService_CreateAcco
 		})
 	}
 }
+
+func (a *AccountService) CreateAccountStreamBidirectional(stream pb.AccountService_CreateAccountStreamBidirectionalServer) error {
+	for {
+		account, err := stream.Recv()
+
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		accountResult, err := a.AccountDB.Create(account.Name, account.Email)
+
+		if err != nil {
+			return err
+		}
+
+		err = stream.Send(&pb.Account{
+			Id:    accountResult.ID,
+			Name:  accountResult.Name,
+			Email: accountResult.Email,
+		})
+
+		if err != nil {
+			return err
+		}
+	}
+}

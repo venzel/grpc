@@ -26,6 +26,7 @@ message AccountGetRequest {
 service AccountService {
     rpc CreateAccount(CreateAccountRequest) returns (Account) {}
     rpc CreateAccountStream(stream CreateAccountRequest) returns (AccountList) {}
+    rpc CreateAccountStreamBidirectional(stream CreateAccountRequest) returns (stream Account) {}
     rpc ListAccounts(blank) returns (AccountList) {}
     rpc GetAccount(AccountGetRequest) returns (Account) {}
 }

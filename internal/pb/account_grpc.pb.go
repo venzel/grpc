@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AccountServiceClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*Account, error)
 	CreateAccountStream(ctx context.Context, opts ...grpc.CallOption) (AccountService_CreateAccountStreamClient, error)
+	CreateAccountStreamBidirectional(ctx context.Context, opts ...grpc.CallOption) (AccountService_CreateAccountStreamBidirectionalClient, error)
 	ListAccounts(ctx context.Context, in *Blank, opts ...grpc.CallOption) (*AccountList, error)
 	GetAccount(ctx context.Context, in *AccountGetRequest, opts ...grpc.CallOption) (*Account, error)
 }
@@ -79,6 +80,37 @@ func (x *accountServiceCreateAccountStreamClient) CloseAndRecv() (*AccountList, 
 	return m, nil
 }
 
+func (c *accountServiceClient) CreateAccountStreamBidirectional(ctx context.Context, opts ...grpc.CallOption) (AccountService_CreateAccountStreamBidirectionalClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AccountService_ServiceDesc.Streams[1], "/pb.AccountService/CreateAccountStreamBidirectional", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &accountServiceCreateAccountStreamBidirectionalClient{stream}
+	return x, nil
+}
+
+type AccountService_CreateAccountStreamBidirectionalClient interface {
+	Send(*CreateAccountRequest) error
+	Recv() (*Account, error)
+	grpc.ClientStream
+}
+
+type accountServiceCreateAccountStreamBidirectionalClient struct {
+	grpc.ClientStream
+}
+
+func (x *accountServiceCreateAccountStreamBidirectionalClient) Send(m *CreateAccountRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *accountServiceCreateAccountStreamBidirectionalClient) Recv() (*Account, error) {
+	m := new(Account)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *accountServiceClient) ListAccounts(ctx context.Context, in *Blank, opts ...grpc.CallOption) (*AccountList, error) {
 	out := new(AccountList)
 	err := c.cc.Invoke(ctx, "/pb.AccountService/ListAccounts", in, out, opts...)
@@ -103,6 +135,7 @@ func (c *accountServiceClient) GetAccount(ctx context.Context, in *AccountGetReq
 type AccountServiceServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*Account, error)
 	CreateAccountStream(AccountService_CreateAccountStreamServer) error
+	CreateAccountStreamBidirectional(AccountService_CreateAccountStreamBidirectionalServer) error
 	ListAccounts(context.Context, *Blank) (*AccountList, error)
 	GetAccount(context.Context, *AccountGetRequest) (*Account, error)
 	mustEmbedUnimplementedAccountServiceServer()
@@ -117,6 +150,9 @@ func (UnimplementedAccountServiceServer) CreateAccount(context.Context, *CreateA
 }
 func (UnimplementedAccountServiceServer) CreateAccountStream(AccountService_CreateAccountStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method CreateAccountStream not implemented")
+}
+func (UnimplementedAccountServiceServer) CreateAccountStreamBidirectional(AccountService_CreateAccountStreamBidirectionalServer) error {
+	return status.Errorf(codes.Unimplemented, "method CreateAccountStreamBidirectional not implemented")
 }
 func (UnimplementedAccountServiceServer) ListAccounts(context.Context, *Blank) (*AccountList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
@@ -174,6 +210,32 @@ func (x *accountServiceCreateAccountStreamServer) SendAndClose(m *AccountList) e
 }
 
 func (x *accountServiceCreateAccountStreamServer) Recv() (*CreateAccountRequest, error) {
+	m := new(CreateAccountRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _AccountService_CreateAccountStreamBidirectional_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AccountServiceServer).CreateAccountStreamBidirectional(&accountServiceCreateAccountStreamBidirectionalServer{stream})
+}
+
+type AccountService_CreateAccountStreamBidirectionalServer interface {
+	Send(*Account) error
+	Recv() (*CreateAccountRequest, error)
+	grpc.ServerStream
+}
+
+type accountServiceCreateAccountStreamBidirectionalServer struct {
+	grpc.ServerStream
+}
+
+func (x *accountServiceCreateAccountStreamBidirectionalServer) Send(m *Account) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *accountServiceCreateAccountStreamBidirectionalServer) Recv() (*CreateAccountRequest, error) {
 	m := new(CreateAccountRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -241,6 +303,12 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "CreateAccountStream",
 			Handler:       _AccountService_CreateAccountStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "CreateAccountStreamBidirectional",
+			Handler:       _AccountService_CreateAccountStreamBidirectional_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},

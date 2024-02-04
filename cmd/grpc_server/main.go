@@ -26,7 +26,11 @@ func main() {
 	accountService := service.NewAccountService(*accountDb)
 
 	grpcServer := grpc.NewServer()
+
+	// Atacha o serviço ao servidor gRPC
 	pb.RegisterAccountServiceServer(grpcServer, accountService)
+
+	// Reflection ler e processa sua própria informação, necessário para o Evans
 	reflection.Register(grpcServer)
 
 	lis, err := net.Listen("tcp", ":50051")
