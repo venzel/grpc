@@ -35,7 +35,11 @@ Através do gRPC-C é possível utilizar python, nodejs, kotlin e etc.
 
 ## O que significa na prática o Remote Procedure Call?
 
-<img src="./media/grpc-1.png" />
+<img src="./media/grpc-1-1.png" />
+
+| Descrição           | Data de modificação     | Versão | Link de download                       |
+| :------------------ | :---------------------- | :----- | :------------------------------------- |
+| Arquivo .excalidraw | 04 de fevereiro de 2024 | v1     | [Download](./media/grpc.excalidraw.md) |
 
 O cliente realiza uma chamada no servidor, que evoca uma função para que o server consiga responder a essa requisição.
 
@@ -58,7 +62,7 @@ No passado, se utilizava muito XML para fazer essas requisições, por conta dos
 
 ### O contrato do protocol buffers
 
-<img src="./media/grpc-2.png" />
+<img src="./media/grpc-2-2.png" />
 
 Tal padrão é conhecido como protofile.
 
@@ -77,27 +81,27 @@ Normalmente se utiliza a versão 3 para o gRPC.
 
 ## Formatos de tráfego entre comunicação gRPC
 
-### Unary
+### 1. Unary
 
-<img src="./media/grpc-1.png" />
+<img src="./media/grpc-3-3.png" />
 
 É bastante simples. Existe um cliente que vai mandar uma requisição e receber uma resposta do servidor.
 
-### Server streaming
+### 2. Server streaming
 
-<img src="./media/grpc-4.png" />
+<img src="./media/grpc-4-4.png" />
 
 O cliente envia uma requisição e recebe várias respostas do servidor. Exemplo, o cliente solicita dados estatísticos e o servidor vai processando e enviando e quando o dado vai chegando para o cliente, ele já vai processando também.
 
-### Client streaming
+### 3. Client streaming
 
-<img src="./media/grpc-5.png" />
+<img src="./media/grpc-5-5.png" />
 
 O cliente envia várias requisição e quando o servidor recebe todas as requisições, envia uma resposta.
 
-### Bidirectional streaming
+### 4. Bidirectional streaming
 
-<img src="./media/grpc-6.png" />
+<img src="./media/grpc-6-6.png" />
 
 Tanto o cliente como o servidor enviam dados entre sí.
 
@@ -177,6 +181,12 @@ go install github.com/ktr0731/evans@latest
 
 ## Comandos
 
+### Rodar o programa
+
+```bash
+go run cmd/grpc_server/main.go
+```
+
 ### Sqlite3
 
 ```bash
@@ -186,6 +196,8 @@ sqlite3 db.sqlite
 sqlite> create table accounts (id string, name string, email string);
 # Lista os dados da tabela
 sqlite> select * from accounts;
+# Para sair
+sqlite> .quit
 ```
 
 ### ProtolC
