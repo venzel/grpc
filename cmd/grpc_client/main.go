@@ -4,17 +4,23 @@ import (
 	"context"
 	"grpc/internal/pb"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(ctx, "localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("Não foi possível conectar: %v", err)
 	}
 	defer conn.Close()
+
+	log.Println("Conexão com o servidor gRPC estabelecida")
 
 	client := pb.NewAccountServiceClient(conn)
 

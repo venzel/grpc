@@ -17,10 +17,10 @@ func NewAccount(db *sql.DB) *Account {
 	return &Account{db: db}
 }
 
-func (c *Account) Create(name string, email string) (Account, error) {
+func (a *Account) Create(name string, email string) (Account, error) {
 	id := uuid.New().String()
 
-	_, err := c.db.Exec("INSERT INTO accounts (id, name, email) VALUES ($1, $2, $3)",
+	_, err := a.db.Exec("INSERT INTO accounts (id, name, email) VALUES ($1, $2, $3)",
 		id, name, email)
 
 	if err != nil {
@@ -30,8 +30,8 @@ func (c *Account) Create(name string, email string) (Account, error) {
 	return Account{ID: id, Name: name, Email: email}, nil
 }
 
-func (c *Account) FindAll() ([]Account, error) {
-	rows, err := c.db.Query("SELECT id, name, email FROM accounts")
+func (a *Account) FindAll() ([]Account, error) {
+	rows, err := a.db.Query("SELECT id, name, email FROM accounts")
 
 	if err != nil {
 		return nil, err
@@ -53,10 +53,10 @@ func (c *Account) FindAll() ([]Account, error) {
 	return accounts, nil
 }
 
-func (c *Account) FindOne(id string) (Account, error) {
+func (a *Account) FindOne(id string) (Account, error) {
 	var name, email string
 
-	err := c.db.QueryRow("SELECT name, email FROM accounts WHERE id = $1", id).
+	err := a.db.QueryRow("SELECT name, email FROM accounts WHERE id = $1", id).
 		Scan(&name, &email)
 
 	if err != nil {

@@ -193,7 +193,7 @@ go run cmd/grpc_server/main.go
 # Acessa o banco
 sqlite3 db.sqlite
 # Cria tabela
-sqlite> create table accounts (id INTEGER PRIMARY KEY, name string, email string);
+sqlite> create table accounts (id string PRIMARY KEY, name string, email string);
 # Lista os dados da tabela
 sqlite> select * from accounts;
 # Para sair
